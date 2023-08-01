@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable object-curly-spacing */
 /* eslint-disable indent */
 /* eslint-disable no-unused-vars */
@@ -6,6 +7,8 @@ const express = require("express");
 const axios = require("axios");
 const admin = require("firebase-admin");
 const functions = require("firebase-functions"); // Add this line
+const cors = require("cors");
+const helmet = require("helmet");
 
 // Initialize Firebase Admin SDK
 const serviceAccount = require("./platform2learn-54f87-firebase-adminsdk-epft1-2b8186ed54.json");
@@ -13,7 +16,23 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
+const corsOptions = {
+  origin: "https://us-central1-platform2learn-54f87.cloudfunctions.net", // Replace this with the correct origin for your client application
+  methods: ["POST"], // Add other HTTP methods if needed
+};
+
 const app = express();
+
+// Middleware to enable CORS
+// app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: true, // Allow requests from any origin
+  })
+);
+
+// Middleware to set security headers
+app.use(helmet());
 
 // Middleware to parse JSON data
 app.use(express.json());
